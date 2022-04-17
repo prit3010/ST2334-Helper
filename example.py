@@ -54,19 +54,19 @@ def q10():
     s = [3, 9, 6, 4]
     ans = []
     for i in range(4):
-        trans = norm_to_t_transformer(36, x[i], s[i]**2)
+        trans = norm_t_transformer(36, x[i], s[i]**2)
         ans.append(st.t.cdf(trans(30), 36-1))
     disp(ans)
 
 # Generate solutions below
 
-q1()
-q2()
-q3()
-q4()
-q5()
-q6()
-q7()
-q8()
-q9()
+# q1()
+# q2()
+# q3()
+# q4()
+# q5()
+# q6()
+# q7()
+# q8()
+# q9()
 q10()
