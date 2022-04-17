@@ -1,5 +1,5 @@
 from scipy import stats as st
-import statistics
+import statistics as sta
 import math
 
 """
@@ -47,48 +47,48 @@ The next section covers functions specifically for constructing confidence inter
 """
 
 # Confidence Interval with Known population Variance
-def ci_known(mean, alpha, n, std):
-    return [mean - (st.norm.ppf((1 - alpha) / 2 + alpha, 0, 1) * (std / math.sqrt(n))),
-            mean + (st.norm.ppf((1 - alpha) / 2 + alpha, 0, 1) * (std / math.sqrt(n)))]
+def ci_known(mean, conf_level, n, std):
+    return [mean - (st.norm.ppf((1 - conf_level) / 2 + conf_level, 0, 1) * (std / math.sqrt(n))),
+            mean + (st.norm.ppf((1 - conf_level) / 2 + conf_level, 0, 1) * (std / math.sqrt(n)))]
 
 # Confidence Interval with Unknown population Variance
-def ci_unknown(mean, alpha, n, std):
-    return [mean - (st.t.ppf((1 - alpha) / 2 + alpha, n - 1) * (std / math.sqrt(n))),
-            mean + (st.t.ppf((1 - alpha) / 2 + alpha, n - 1) * (std / math.sqrt(n)))]
+def ci_unknown(mean, conf_level, n, std):
+    return [mean - (st.t.ppf((1 - conf_level) / 2 + conf_level, n - 1) * (std / math.sqrt(n))),
+            mean + (st.t.ppf((1 - conf_level) / 2 + conf_level, n - 1) * (std / math.sqrt(n)))]
 
 
 # Confidence Interval for Difference of Two Means(Known Variance)
 # Mean, n and std must be array with 1, 2
-def diff_ci_known(mean, alpha, n, std):
-    return [(mean[0] - mean[1]) - (st.norm.ppf((1 - alpha) / 2 + alpha, 0, 1) \
+def diff_ci_known(mean, conf_level, n, std):
+    return [(mean[0] - mean[1]) - (st.norm.ppf((1 - conf_level) / 2 + conf_level, 0, 1) \
                     * (math.sqrt(std[0] ** 2 / n[0] + std[1] ** 2 / n[1]))),
-            (mean[0] - mean[1]) + (st.norm.ppf((1 - alpha) / 2 + alpha, 0, 1) \
+            (mean[0] - mean[1]) + (st.norm.ppf((1 - conf_level) / 2 + conf_level, 0, 1) \
                     * (math.sqrt(std[0] ** 2 / n[0] + std[1] ** 2 / n[1])))]
 
 # Confidence Interval for Difference of Two Means (Unknown Variance)
 # + Population Variances Equal and
 # for small Sample
-def pooled_sample_var(n, std):
-    return math.sqrt(((n[0] - 1) * (std[0] ** 2) + (n[1] - 1) * (std[1] ** 2)) \
-            / (n[0] + n[1] - 2))
+def pooled_sample_var(n, var):
+    return ((n[0] - 1) * var[0] + (n[1] - 1) * var[1]) \
+            / (n[0] + n[1] - 2)
 
-def diff_ci_unknown_small(mean, alpha, n, std):
+def diff_ci_unknown_small(mean, conf_level, n, std):
     var = pooled_sample_var(n, std)
-    return [(mean[0] - mean[1]) - (st.t.ppf((1 - alpha) / 2 + alpha, n[0] + n[1] - 2) \
+    return [(mean[0] - mean[1]) - (st.t.ppf((1 - conf_level) / 2 + conf_level, n[0] + n[1] - 2) \
                     * (var * math.sqrt(1 / n[0] + 1 / n[1]))),
-            (mean[0] - mean[1]) + (st.t.ppf((1 - alpha) / 2 + alpha, n[0] + n[1] - 2) \
+            (mean[0] - mean[1]) + (st.t.ppf((1 - conf_level) / 2 + conf_level, n[0] + n[1] - 2) \
                     * (var * math.sqrt(1 / n[0] + 1 / n[1])))]
 
 
-# Confidence Interval for Difference of Two Means(UnknownVariance)
+# Confidence Interval for Difference of Two Means (Unknown Variance)
 # + Population Variances Equal and
 # for large Sample
 
-def diff_ci_unknown_large(mean, alpha, n, std):
+def diff_ci_unknown_large(mean, conf_level, n, std):
     var = pooled_sample_var(n, std)
-    return [(mean[0] - mean[1]) - (st.norm.ppf((1 - alpha) / 2 + alpha, 0, 1) \
+    return [(mean[0] - mean[1]) - (st.norm.ppf((1 - conf_level) / 2 + conf_level, 0, 1) \
                     * (var * math.sqrt(1 / n[0] + 1 / n[1]))),
-            (mean[0] - mean[1]) + (st.norm.ppf((1 - alpha) / 2 + alpha, 0, 1) \
+            (mean[0] - mean[1]) + (st.norm.ppf((1 - conf_level) / 2 + conf_level, 0, 1) \
                     * (var * math.sqrt(1 / n[0] + 1 / n[1])))]
 
 # Confidence Interval for Variances
@@ -100,21 +100,21 @@ def sum_squared_diff(entry, mean):
         result += (entry[i] - mean) ** 2
     return result
 
-def var_ci_known(entry, mean, n, alpha):
-    return [sum_squared_diff(entry,mean) / st.chi2.ppf((1 - alpha) / 2,n),
-            sum_squared_diff(entry,mean) / st.chi2.ppf((1 - alpha) / 2 + alpha,n)]
+def var_ci_known(entry, mean, n, conf_level):
+    return [sum_squared_diff(entry,mean) / st.chi2.ppf((1 - conf_level) / 2,n),
+            sum_squared_diff(entry,mean) / st.chi2.ppf((1 - conf_level) / 2 + conf_level,n)]
 
 # Case 2: Population Mean is unknown
-def var_ci_unknown(sample_var, n, alpha):
-    return [(n - 1) * sample_var / st.chi2.ppf((1 - alpha) / 2  + alpha, n - 1),
-           (n - 1) * sample_var / st.chi2.ppf((1 - alpha) / 2 , n - 1)]
+def var_ci_unknown(sample_var, n, conf_level):
+    return [(n - 1) * sample_var / st.chi2.ppf((1 - conf_level) / 2  + conf_level, n - 1),
+           (n - 1) * sample_var / st.chi2.ppf((1 - conf_level) / 2 , n - 1)]
 
 # C.I for ratio of two variance with Unknown Means
-def ratio_var_ci_unknown(sample_var, n, alpha):
-    return [(sample_var[0] / sample_var[1]) * (1 / st.f.ppf((1 - alpha) / 2 \
-                    + alpha, n[0] - 1, n[1] - 1)),
-            (sample_var[0] / sample_var[1]) * (st.f.ppf((1 - alpha) / 2 \
-                    + alpha, n[1] - 1, n[0] - 1))]
+def ratio_var_ci_unknown(sample_var, n, conf_level):
+    return [(sample_var[0] / sample_var[1]) * (1 / st.f.ppf((1 - conf_level) / 2 \
+                    + conf_level, n[0] - 1, n[1] - 1)),
+            (sample_var[0] / sample_var[1]) * (st.f.ppf((1 - conf_level) / 2 \
+                    + conf_level, n[1] - 1, n[0] - 1))]
 
 # p-value for two-tailed tests, given raw cdf for a distribution 
 def p_value(p):
