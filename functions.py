@@ -94,7 +94,6 @@ def z_cdf(x):
     """
     return st.norm.cdf(x, 0, 1)
 
-# Takes in two arrays of paired data, and returns sample mean and variance
 def paired_data(x, y):
     """Computes the sample mean and variance for difference in paired
     data.
@@ -118,6 +117,48 @@ def paired_data(x, y):
     d_bar = sta.mean(diff)
     var = sta.variance(diff)
     return (d_bar, var)
+
+def pooled_sample_var(n, sample_var):
+    """Computes the pooled sample variance for two samples with the same
+    population variance.
+
+    Parameters
+    ----------
+    n : int[]
+        The size of the samples. Must be a list of size 2.
+
+    sample_var : float[]
+        The variance of the samples. Must be a list of size 2.
+
+    Returns
+    -------
+    float
+        The value of the pooled sample variance.
+    """
+    return ((n[0] - 1) * sample_var[0] + (n[1] - 1) * sample_var[1]) \
+            / (n[0] + n[1] - 2)
+
+def sum_squares(entry, mu):
+    """Computes the sum of squared difference to mean, given that the
+    population mean is known.
+
+    Parameters
+    ----------
+    entry : float[]
+        The sample of data.
+
+    mu : float
+        The population mean.
+
+    Returns
+    -------
+    float
+        The value of the sum of squared difference to mean.
+    """
+    result = 0
+    for x in entry:
+        result += (x - mu) ** 2
+    return result
 
 # Section 2: Confidence Intervals
 # -------------------------------
@@ -206,9 +247,12 @@ def ci_unknown(mean, conf_level, n, sample_std):
     float[]
         The lower and upper bounds of the confidence interval respectively.
     """
-    factor = st.t.ppf(upper_bound(conf_level), n - 1)
-    diff = factor * (sample_std / (n ** 0.5))
-    return [mean - diff, mean + diff]
+    if n >= 30:
+        return ci_known(mean, conf_level, n, sample_std)
+    else:
+        factor = st.t.ppf(upper_bound(conf_level), n - 1)
+        diff = factor * (sample_std / (n ** 0.5))
+        return [mean - diff, mean + diff]
 
 def diff_ci_known(mean, conf_level, n, var):
     """Constructs a confidence interval for the difference in mean for
@@ -273,26 +317,6 @@ def diff_ci_unknown(mean, conf_level, n, sample_var):
     diff = factor * math.sqrt((sample_var[0] / n[0]) + (sample_var[1] / n[1]))
     center = mean[0] - mean[1]
     return [center - diff, center + diff]
-
-def pooled_sample_var(n, sample_var):
-    """Computes the pooled sample variance for two samples with the same
-    population variance.
-
-    Parameters
-    ----------
-    n : int[]
-        The size of the samples. Must be a list of size 2.
-
-    sample_var : float[]
-        The variance of the samples. Must be a list of size 2.
-
-    Returns
-    -------
-    float
-        The value of the pooled sample variance.
-    """
-    return ((n[0] - 1) * sample_var[0] + (n[1] - 1) * sample_var[1]) \
-            / (n[0] + n[1] - 2)
 
 def diff_ci_equal(mean, conf_level, n, sample_var):
     """Constructs a confidence interval for the difference in mean for
@@ -377,29 +401,7 @@ def paired_ci_raw(x, y, conf_level):
 
 # Confidence Interval for Variances
 
-def sum_squares(entry, mu):
-    """Computes the sum of squared difference to mean, given that the
-    population mean is known.
-
-    Parameters
-    ----------
-    entry : float[]
-        The sample of data.
-
-    mu : float
-        The population mean.
-
-    Returns
-    -------
-    float
-        The value of the sum of squared difference to mean.
-    """
-    result = 0
-    for x in entry:
-        result += (x - mu) ** 2
-    return result
-
-def var_ci_known(entry, mu, n, conf_level):
+def var_ci_known(entry, mu, conf_level):
     """Constructs a confidence interval for the variance of a population,
     given that the population mean is known. The full data set has to be
     provided to accurately compute.
@@ -412,9 +414,6 @@ def var_ci_known(entry, mu, n, conf_level):
     mu : float
         The population mean.
 
-    n : int
-        The size of the sample.
-
     conf_level : float
         The value of the confidence level.
 
@@ -423,12 +422,12 @@ def var_ci_known(entry, mu, n, conf_level):
     float[]
         The lower and upper bounds of the confidence interval respectively.
     """
+    n = len(entry)
     factor_low = st.chi2.ppf(upper_bound(conf_level), n)
     factor_high = st.chi2.ppf(lower_bound(conf_level), n)
     ssq = sum_squares(entry, mu)
     return [ssq / factor_low, ssq / factor_high]
 
-# Case 2: Population Mean is unknown
 def var_ci_unknown(sample_var, n, conf_level):
     """Constructs a confidence interval for the variance of a population,
     given that the population mean is unknown.
@@ -454,7 +453,6 @@ def var_ci_unknown(sample_var, n, conf_level):
     ssq = (n - 1) * sample_var
     return [ssq / factor_low, ssq / factor_high]
 
-# C.I for ratio of two variance
 def ratio_var_ci(sample_var, n, conf_level):
     """Constructs a confidence interval for the ratio of variances of
     two populations.
@@ -512,6 +510,84 @@ def p_value(p, tail):
         return 2 * min(p, 1 - p)
     else:
         raise ValueError("Not a valid input of tails")
+
+def pv_calc(dist, n, mu, var, test_val, tails):
+    """Computes the p-value for a test. Can be used with the normal
+    distribution, t-distribution, chi2-distribution, but not the f-
+    distribution.
+
+    Parameters
+    ----------
+    dist : class
+        The specific distribution to be used for the test.
+
+    n : int
+        The size of the sample.
+
+    mu : float
+        The population mean, hypothesized or known.
+
+    var : float
+        The population variance, hypothesized or known.
+
+    test_val : float
+        The value that is obtained from data, and to be tested.
+
+    tails : int
+        Indicates which tailed hypothesis test.
+
+    Returns
+    -------
+    float
+        The appropriate p-value for the test.
+    """
+    if dist == st.norm:
+        return p_value(dist.cdf(test_val, mu, (var / n) ** 0.5), tails)
+    elif dist == st.t:
+        trans = norm_t_transformer(n, mu, var)
+        return p_value(dist.cdf(trans(test_val), n - 1), tails)
+    elif dist == st.chi2:
+        trans = norm_chi2_transformer(n, var)
+        return p_value(dist.cdf(trans(test_val), n - 1), tails)
+    elif dist == st.f:
+        raise ValueError("Use the function \'pv_calc_f\' instead")
+    else:
+        raise ValueError("Not a valid distribution")
+
+def pv_calc_f(n1, n2, var1, var2, s_sq1, s_sq2, tails):
+    """Computes the p-value for a test. Can only be used for the f-
+    distribution.
+
+    Parameters
+    ----------
+    n1 : int
+        The size of the first sample.
+
+    n2 : int
+        The size of the second sample.
+
+    var1 : float
+        The hypothesized variance of the first population.
+
+    var2 : float
+        The hypothesized variance of the second population.
+
+    s_sq1 : float
+        The sum of squared for the first sample.
+
+    s_sq2 : float
+        The sum of squared for the second sample.
+
+    tails : int
+        Indicates which tailed hypothesis test.
+
+    Returns
+    -------
+    float
+        The appropriate p-value for the test.
+    """
+    trans = norm_f_transformer(var1, var2)
+    return p_value(st.f.cdf(trans(s_sq1, s_sq2), n1 - 1, n2 - 1), tails)
 
 def comp_p_alpha(pv, alpha):
     """Compares a given p-value with a given level of significance, and
@@ -643,84 +719,6 @@ def norm_f_transformer(var1, var2):
     res = lambda s_sq1, s_sq2: (s_sq1 * var1) / (s_sq2 * var2)
     return res
 
-def pv_calc(dist, n, mu, var, test_val, tails):
-    """Computes the p-value for a test. Can be used with the normal
-    distribution, t-distribution, chi2-distribution, but not the f-
-    distribution.
-
-    Parameters
-    ----------
-    dist : class
-        The specific distribution to be used for the test.
-
-    n : int
-        The size of the sample.
-
-    mu : float
-        The population mean, hypothesized or known.
-
-    var : float
-        The population variance, hypothesized or known.
-
-    test_val : float
-        The value that is obtained from data, and to be tested.
-
-    tails : int
-        Indicates which tailed hypothesis test.
-
-    Returns
-    -------
-    float
-        The appropriate p-value for the test.
-    """
-    if dist == st.norm:
-        return p_value(dist.cdf(test_val, mu, (var / n) ** 0.5), tails)
-    elif dist == st.t:
-        trans = norm_t_transformer(n, mu, var)
-        return p_value(dist.cdf(trans(test_val), n - 1), tails)
-    elif dist == st.chi2:
-        trans = norm_chi2_transformer(n, var)
-        return p_value(dist.cdf(trans(test_val), n - 1), tails)
-    elif dist == st.f:
-        raise ValueError("Use the function \'pv_calc_f\' instead")
-    else:
-        raise ValueError("Not a valid distribution")
-
-def pv_calc_f(n1, n2, var1, var2, s_sq1, s_sq2, tails):
-    """Computes the p-value for a test. Can only be used for the f-
-    distribution.
-
-    Parameters
-    ----------
-    n1 : int
-        The size of the first sample.
-
-    n2 : int
-        The size of the second sample.
-
-    var1 : float
-        The hypothesized variance of the first population.
-
-    var2 : float
-        The hypothesized variance of the second population.
-
-    s_sq1 : float
-        The sum of squared for the first sample.
-
-    s_sq2 : float
-        The sum of squared for the second sample.
-
-    tails : int
-        Indicates which tailed hypothesis test.
-
-    Returns
-    -------
-    float
-        The appropriate p-value for the test.
-    """
-    trans = norm_f_transformer(var1, var2)
-    return p_value(st.f.cdf(trans(s_sq1, s_sq2), n1 - 1, n2 - 1), tails)
-
 def mean_hypotest_known(x_bar, mu, var, n, alpha, tails):
     """Conducts a hypothesis test on the mean of a sample, given that
     the population variance is known.
@@ -753,7 +751,7 @@ def mean_hypotest_known(x_bar, mu, var, n, alpha, tails):
     pv = pv_calc(st.norm, n, mu, var, x_bar, tails)
     return comp_p_alpha(pv, alpha)
 
-def mean_hypotest_unknown(x_bar, mu, var, n, alpha, tails):
+def mean_hypotest_unknown(x_bar, mu, sample_var, n, alpha, tails):
     """Conducts a hypothesis test on the mean of a sample, given that
     the population variance is unknown.
 
@@ -765,7 +763,7 @@ def mean_hypotest_unknown(x_bar, mu, var, n, alpha, tails):
     mu : float
         The hypothesized mean of the population.
 
-    var : float
+    sample_var : float
         The variance of the sample.
 
     n : int
@@ -782,7 +780,7 @@ def mean_hypotest_unknown(x_bar, mu, var, n, alpha, tails):
     string
         The conclusion of the test.
     """
-    pv = pv_calc(st.t, n, mu, var, x_bar, tails)
+    pv = pv_calc(st.t, n, mu, sample_var, x_bar, tails)
     return comp_p_alpha(pv, alpha)
 
 def diff_hypotest_known(x_bar, mu, var, n, alpha, tails):
@@ -820,7 +818,7 @@ def diff_hypotest_known(x_bar, mu, var, n, alpha, tails):
     pv = pv_calc(st.norm, 1, 0, 1, trans(x_bar[0], x_bar[1]), tails)
     return comp_p_alpha(pv, alpha)
 
-def diff_hypotest_unknown(x_bar, mu, var, n, alpha, tails):
+def diff_hypotest_unknown(x_bar, mu, sample_var, n, alpha, tails):
     """Conducts a hypothesis test on the difference of means of two
     samples, given that the population variance are unknown.
 
@@ -834,7 +832,7 @@ def diff_hypotest_unknown(x_bar, mu, var, n, alpha, tails):
         size 2. If no specific mean are known, then only the relative
         difference in means is required to be accurate.
 
-    var : float[]
+    sample_var : float[]
         The variance of the samples. Must be a list of size 2.
 
     n : int[]
@@ -851,7 +849,7 @@ def diff_hypotest_unknown(x_bar, mu, var, n, alpha, tails):
     string
         The conclusion of the test.
     """
-    trans = diff_t_transformer(n, mu, var)
+    trans = diff_t_transformer(n, mu, sample_var)
     pv = 0
     if n[0] >= 30 and n[1] >= 30:
         pv = p_value(z_cdf(trans(x_bar[0], x_bar[1])), tails)
@@ -859,7 +857,7 @@ def diff_hypotest_unknown(x_bar, mu, var, n, alpha, tails):
         pv = p_value(st.t.cdf(trans(x_bar[0], x_bar[1]), n[0] + n[1] - 2), tails)
     return comp_p_alpha(pv, alpha)
 
-def diff_hypotest_equal(x_bar, mu, var, n, alpha, tails):
+def diff_hypotest_equal(x_bar, mu, sample_var, n, alpha, tails):
     """Conducts a hypothesis test on the difference of means of two
     samples, given that the population variance are unknown but equal.
 
@@ -873,7 +871,7 @@ def diff_hypotest_equal(x_bar, mu, var, n, alpha, tails):
         size 2. If no specific mean are known, then only the relative
         difference in means is required to be accurate.
 
-    var : float[]
+    sample_var : float[]
         The variance of the samples. Must be a list of size 2.
 
     n : int[]
@@ -890,10 +888,10 @@ def diff_hypotest_equal(x_bar, mu, var, n, alpha, tails):
     string
         The conclusion of the test.
     """
-    var_p = pooled_sample_var(n, var)
+    var_p = pooled_sample_var(n, sample_var)
     return diff_hypotest_unknown(x_bar, mu, [var_p, var_p], n, alpha, tails)
 
-def paired_hypotest_computed(d_bar, mu_d, var, n, alpha, tails):
+def paired_hypotest(d_bar, mu_d, var, n, alpha, tails):
     """Conducts a hypothesis test on the difference of means of two
     populations, given a set of paired data.
 
@@ -953,7 +951,7 @@ def paired_hypotest_raw(x, y, mu_d, alpha, tails):
         The conclusion of the test.
     """
     d_bar, var = paired_data(x, y)
-    return paired_hypotest_computed(d_bar, mu_d, var, len(x), alpha, tails)
+    return paired_hypotest(d_bar, mu_d, var, len(x), alpha, tails)
 
 def var_hypotest(sample_var, var, n, alpha, tails):
     """Conducts a hypothesis test on the variance of a sample.
@@ -997,8 +995,8 @@ def var_ratio_hypotest(sample_var, var, n, alpha, tails):
         size 2. If the specific variance are not known, then only the
         relative variance provided has to be accurate.
 
-    n : int
-        The size of the sample.
+    n : int[]
+        The size of the samples. Must be a list of size 2.
 
     alpha : float
         The level of significance of the test.

@@ -63,8 +63,13 @@ def test():
     n = len(entry)
     mu = 16
     var = sta.variance(entry)
-    b = var_ci_known(entry, mu, n, 0.95)
-    disp(b)
+    b = var_ci_known(entry, mu, 0.95)
+
+
+    x = [4.5, 4.6, 4.3, 4.4, 4.7, 4.6]
+    y = [4.2, 4.2, 4.1, 4.1, 4.5, 4.3]
+    data = paired_data(x, y)
+    disp(b, data)
 
 # Generate solutions below
 
