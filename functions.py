@@ -554,7 +554,7 @@ def pv_calc(dist, n, mu, var, test_val, tails):
     else:
         raise ValueError("Not a valid distribution")
 
-def pv_calc_f(n1, n2, var1, var2, s_sq1, s_sq2, tails):
+def pv_calc_f(n1, n2, var1, var2, sample_var1, sample_var2, tails):
     """Computes the p-value for a test. Can only be used for the f-
     distribution.
 
@@ -572,11 +572,11 @@ def pv_calc_f(n1, n2, var1, var2, s_sq1, s_sq2, tails):
     var2 : float
         The hypothesized variance of the second population.
 
-    s_sq1 : float
-        The sum of squared for the first sample.
+    sample_var1 : float
+        The sum of squares for the first sample.
 
-    s_sq2 : float
-        The sum of squared for the second sample.
+    sample_var2 : float
+        The sum of squares for the second sample.
 
     tails : int
         Indicates which tailed hypothesis test.
@@ -587,7 +587,7 @@ def pv_calc_f(n1, n2, var1, var2, s_sq1, s_sq2, tails):
         The appropriate p-value for the test.
     """
     trans = norm_f_transformer(var1, var2)
-    return p_value(st.f.cdf(trans(s_sq1, s_sq2), n1 - 1, n2 - 1), tails)
+    return p_value(st.f.cdf(trans(sample_var1, sample_var2), n1 - 1, n2 - 1), tails)
 
 def comp_p_alpha(pv, alpha):
     """Compares a given p-value with a given level of significance, and

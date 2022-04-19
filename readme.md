@@ -663,7 +663,7 @@ Sometimes when we compute p-value, we trouble ourselves as we think about whethe
 
 Here, if the test is two-tailed, then we use a value of `0` to indicate this. If the test is one-tailed and testing if the statistic is less than the hypothesized value, then we use `-1` to indicate this. If it is testing if the statistic is more than, we use `1` to indicate this.
 
-Below is the function `p_value`, used to return the p-value for a test. This can be used for normal, t, and chi-squared distributions, but not the f-distribution.
+Below is the function `p_value`, used to return the p-value for a test.
 
 ```python
 """Computes the appropriate p-value given the probability of an
@@ -693,7 +693,7 @@ c = p_value(p, -1) #if less than in H_0
 disp(a, b, c)
 ```
 
-Below is the function `pv_calc`, which computes the probability of the event given a distribution, and relevant statistics.
+Below is the function `pv_calc`, which computes the probability of the event given a distribution, and relevant statistics. This can be used for normal, t, and chi-squared distributions, but not the f-distribution.
 
 ```python
 """Computes the p-value for a test. Can be used with the normal
@@ -734,6 +734,47 @@ norm = pv_calc(st.norm, n, mu, var, 4.8, tails) #test 4.8 against 5 for normal
 t = pv_calc(st.t, n, mu, var, 4.8, tails) #test 4.8 against 5 using t
 chi = pv_calc(st.chi2, n, mu, var, 2.3, tails) #test 2.3 against 2 using chi2
 disp(norm, t, chi)
+```
+
+Below is the function `pv_calc_f`, for calculating the p-value for an f-distribution.
+
+```python
+"""Computes the p-value for a test. Can only be used for the f-
+distribution.
+
+Parameters
+----------
+n1 : int
+    The size of the first sample.
+
+n2 : int
+    The size of the second sample.
+
+var1 : float
+    The hypothesized variance of the first population.
+
+var2 : float
+    The hypothesized variance of the second population.
+
+sample_var1 : float
+    The sum of squares for the first sample.
+
+sample_var2 : float
+    The sum of squares for the second sample.
+
+tails : int
+    Indicates which tailed hypothesis test.
+
+Returns
+-------
+float
+    The appropriate p-value for the test.
+"""
+n1, n2 = 24, 28
+var1, var2 = 2.2, 2.4
+sample_var1, sample_var2 = 2.4, 2.8
+tails = 0
+pv = pv_calc_f(n1, n2, var1, var2, sample_var1, sample_var2, tails)
 ```
 
 ### Concluding the Test
