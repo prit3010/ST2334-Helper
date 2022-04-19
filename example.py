@@ -58,15 +58,29 @@ def q10():
         ans.append(st.t.cdf(trans(30), 36-1))
     disp(ans)
 
+def test():
+    entry = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 14.6, 24.2, 11.23, 15.3]
+    n = len(entry)
+    mu = 16
+    var = sta.variance(entry)
+    b = var_ci_known(entry, mu, 0.95)
+
+
+    x = [4.5, 4.6, 4.3, 4.4, 4.7, 4.6]
+    y = [4.2, 4.2, 4.1, 4.1, 4.5, 4.3]
+    data = paired_data(x, y)
+    disp(b, data)
+
 # Generate solutions below
 
-# q1()
-# q2()
-# q3()
-# q4()
-# q5()
-# q6()
-# q7()
-# q8()
-# q9()
+q1()
+q2()
+q3()
+q4()
+q5()
+q6()
+q7()
+q8()
+q9()
 q10()
+test()
