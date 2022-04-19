@@ -12,7 +12,7 @@ There are three main functionalities provided.
 
 1. General Usage: convenient functions, but very limited
 2. Confidence Intervals: construct confidence intervals for samples
-3. Hypotheses Testing: conduct hypothesis test give data
+3. Hypotheses Testing: conduct hypothesis test given data
 
 The detailed specifications and instructions are provided below.
 
