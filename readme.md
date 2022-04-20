@@ -1036,7 +1036,7 @@ string
 x_bar, mu, sample_var, n = 4.5, 5, 1.5, 30
 alpha = 0.05
 tails = 0
-ans = mean_hypotest_known(x_bar, mu, sample_var, n, alpha, tails)
+ans = mean_hypotest_unknown(x_bar, mu, sample_var, n, alpha, tails)
 disp(ans)
 
 ```

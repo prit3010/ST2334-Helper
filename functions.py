@@ -135,7 +135,7 @@ def pooled_sample_var(n, sample_var):
     float
         The value of the pooled sample variance.
     """
-    return ((n[0] - 1) * sample_var[0] + (n[1] - 1) * sample_var[1]) \
+    return ((n[0] - 1) * sample_var[0] + (n[1] - 1) * sample_var[1])\
             / (n[0] + n[1] - 2)
 
 def sum_squares(entry, mu):
@@ -780,7 +780,11 @@ def mean_hypotest_unknown(x_bar, mu, sample_var, n, alpha, tails):
     string
         The conclusion of the test.
     """
-    pv = pv_calc(st.t, n, mu, sample_var, x_bar, tails)
+    if n >= 30:
+        dist = st.norm
+    else:
+        dist = st.t
+    pv = pv_calc(dist, n, mu, sample_var, x_bar, tails)
     return comp_p_alpha(pv, alpha)
 
 def diff_hypotest_known(x_bar, mu, var, n, alpha, tails):
