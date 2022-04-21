@@ -8,6 +8,12 @@ It may not be very useful for other applications.
 
 ## Usage
 
+Before using, ensure that you have SciPy installed. You can perform the installation using pip, with the following command in your shell.
+
+```
+python3 -m pip install scipy
+```
+
 There are three main functionalities provided.
 
 1. General Usage: convenient functions, but very limited
