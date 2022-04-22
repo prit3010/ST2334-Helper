@@ -78,22 +78,6 @@ def find_var(pdf):
         ex2 += case[0] ** 2 * case[1]
     return ex2 - find_mu(pdf) ** 2
 
-def z_cdf(x):
-    """Finds the cumulative distribution function value at x, of the
-    standard normal distribution, or z-distribution.
-
-    Parameters
-    ----------
-    x : float
-        The value of the z-distribution to compute.
-
-    Returns
-    -------
-    float
-        The cdf of the z-distribution at the given value.
-    """
-    return st.norm.cdf(x, 0, 1)
-
 def paired_data(x, y):
     """Computes the sample mean and variance for difference in paired
     data.
@@ -194,6 +178,33 @@ def lower_bound(conf_level):
         The value of the lower bound of the interval.
     """
     return (1 - conf_level) / 2
+
+def error_min_size(conf_level, std, err):
+    """Finds the minimum size required to ensure a low level of error involved
+    with construction of confidence intervals.
+    This can only be used for confidence intervals on population mean, and
+    only if it approximates to a normal distribution.
+
+    Parameters
+    ----------
+    conf_level : float
+        The value of the confidence level.
+
+    std : float
+        The standard deviation of the population, or the sample.
+
+    err : float
+        The error that is desired, at most.
+
+    Returns
+    -------
+    string
+        The resultant inequality, which displays n, the sample size, and the
+        minimum size required.
+    """
+    factor = st.norm.ppf(upper_bound(conf_level), 0, 1)
+    res = (factor * (std / err)) ** 2
+    return f"n >= {res}"
 
 # Confidence Intervals for Mean
 
@@ -856,7 +867,7 @@ def diff_hypotest_unknown(x_bar, mu, sample_var, n, alpha, tails):
     trans = diff_t_transformer(n, mu, sample_var)
     pv = 0
     if n[0] >= 30 and n[1] >= 30:
-        pv = p_value(z_cdf(trans(x_bar[0], x_bar[1])), tails)
+        pv = p_value(st.norm.cdf(trans(x_bar[0], x_bar[1])), tails)
     else:
         pv = p_value(st.t.cdf(trans(x_bar[0], x_bar[1]), n[0] + n[1] - 2), tails)
     return comp_p_alpha(pv, alpha)

@@ -16,7 +16,7 @@ python3 -m pip install scipy
 
 There are three main functionalities provided.
 
-1. General Usage: convenient functions, but very limited
+1. General Usage: basic and convenient functions, but very limited
 2. Confidence Intervals: construct confidence intervals for samples
 3. Hypotheses Testing: conduct hypothesis test given data
 
@@ -26,9 +26,17 @@ The detailed specifications and instructions are provided below.
 
 1. [General Usage](#general-usage)
 
+    - [Basic Distributions](#basic-distributions)
+        - [Binomial Distribution](#binomial-distribution)
+        - [Negative Binomial Distribution](#negative-binomial-distribution)
+        - [Poisson Distribution](#poisson-distribution)
+        - [Exponential Distribution](#exponential-distribution)
+        - [Normal Distribution](#normal-distribution)
+        - [t-Distribution](#t-distribution)
+        - [Chi-squared Distribution](#chi-squared-distribution)
+        - [f-Distribution](#f-distribution)
     - [Displaying answers](#displaying-answers)
     - [Discrete pdf](#discrete-pdf)
-    - [Z-distribution](#z-distribution)
     - [Paired Data](#paired-data)
     - [Pooled Sample Variance](#pooled-sample-variance)
     - [Sum of Squares](#sum-of-squares)
@@ -36,6 +44,7 @@ The detailed specifications and instructions are provided below.
 2. [Confidence Intervals](#confidence-intervals)
 
     - [Interval Bounds](#interval-bounds)
+    - [Minimum Size for a Desired Error](#minimum-size-for-a-desired-error)
     - [CI for Mean](#ci-for-mean)
         - [CI: Mean with Known Variance](#ci-mean-with-known-variance)
         - [CI: Mean with Unknown Variance](#ci-mean-with-unknown-variance)
@@ -70,6 +79,154 @@ The detailed specifications and instructions are provided below.
         - [HT: Ratio of Variance](#ht-ratio-of-variance)
 
 ## General Usage
+
+## Basic Distributions
+
+These are functions already provided by **SciPy**, for computations using common distributions. The usage of these functions is not modified, but merely placed here for the user's reference.
+
+### Binomial Distribution
+
+Below are the functions for computations with the **Binomial Distribution**.
+
+```python
+# X ~ B(10,0.4), where X = number of successes, with number of trials = 10 and prob of a success = 0.4
+
+# To find Pr(X <= 5),
+st.binom.cdf(5,10,0.4) # gives 0.833761
+# To find Pr(X = 5),
+st.binom.pmf(5,10,0.4) # gives 0.200658
+# To find Pr(X > 5),
+1-st.binom.cdf(5,10,0.4) # gives 0.166239
+# To find x such that Pr(X <= x) >= 0.05,
+st.binom.ppf(0.05,10,0.4) # gives 2
+```
+
+### Negative Binomial Distribution
+
+Below are the functions for computations with the **Negative Binomial Distribution**.
+
+```python
+# X ~ NB(4,0.55), where X = number of trials, with number of successes = 4 and prob of a success = 0.55
+
+# To find Pr(X <= 6),
+st.nbinom.cdf(2,4,0.55) # gives 0.441518 , where 2 = number of failures
+# To find Pr(X = 6),
+st.nbinom.pmf(2,4,0.55) # gives 0.1853
+# To find Pr(X > 6),
+1-st.nbinom.cdf(2,4,0.55) # gives 0.558482
+# To find x such that Pr(X <= x) >= 0.25,
+st.binom.ppf(0.25,4,0.55) # gives 1  which is the number of failures. Hence, x = 5
+```
+
+### Poisson Distribution
+
+Below are the functions for computations with the **Poisson Distribution**.
+
+```python
+# X ~ P(8), where E(X) = lambda = 8
+
+# To find Pr(X <= 6),
+st.poisson.cdf(6,8) # gives 0.313374
+# To find Pr(X = 6),
+st.poisson.pmf(6,8) # gives 0.122138
+# To find Pr(X > 6),
+1-st.poisson.cdf(6,8) # gives 0.686626
+# To find x such that Pr(X <= x) >= 0.25,
+st.poisson.ppf(0.25,8) # gives 6
+```
+
+### Exponential Distribution
+
+Below are the functions for computations with the **Exponential Distribution**.
+
+```python
+# X ~ Exp(1/5), where E(X) = 5
+
+# To find Pr(X <= 8),
+st.expon.cdf(8,0,5) # gives 0.798103 with the second argument being the lower limit of the x range and 3rd argument = E(X)
+# To find pdf f(8),
+st.expon.pdf(8,0,5) # gives 0.0403793
+# To find Pr(X > 8),
+1-st.expon.cdf(8,0,5) # gives 0.201897
+# To find x such that Pr(X <= x) = 0.05,
+st.expon.ppf(0.05,0,5) # gives 0.256466
+```
+
+### Normal Distribution
+
+Below are the functions for computations with the **Normal Distribution**.
+
+```python
+# X ~ N(50, 10^2), where mu=E(X)=50 and sigma^2=V(X)=10^2
+
+# To find Pr(X <= 45),
+st.norm.cdf(45,50,10) # gives 0.308538
+# To find pdf f(45),
+st.norm.pdf(45,50,10) # gives 0.0352065
+# To find Pr(X > 45),
+1-st.norm.cdf(45,50,10) # gives 0.691462
+# To find x such that Pr(X <= x) = 0.05,
+st.norm.ppf(0.05,50,10) # gives 33.5515
+# To find z such that Pr(Z >= z) = 0.05 with Z ~ N(0,1),
+st.norm.ppf(0.95,0,1) # gives 1.64485
+```
+
+### t-Distribution
+
+Below are the functions for computations with the **t-Distribution**.
+
+```python
+# X ~ t(10), where degrees of freedom = 10
+
+# To find Pr(X <= 1.5),
+st.t.cdf(1.5,10) # gives 0.917746
+# To find pdf f(1.5),
+st.t.pdf(1.5,10) # gives 0.127445
+# To find Pr(X > 1.5),
+1-st.t.cdf(1.5,10) # gives 0.0822537
+# To find x such that Pr(X <= x) = 0.05,
+st.t.ppf(0.05,10) # gives -1.81246
+# To find x such that Pr(X >= x) = 0.05,
+st.t.ppf(0.95,10) # gives 1.81246
+```
+
+### Chi-squared Distribution
+
+Below are the functions for computations with the **Chi-squared Distribution**.
+
+```python
+# X ~ Chisq(10), where degrees of freedom = 10
+
+# To find Pr(X <= 12),
+st.chi2.cdf(12,10) # gives 0.714943
+# To find pdf f(12),
+st.chi2.pdf(12,10) # gives 0.0669263
+# To find Pr(X > 12),
+1-st.chi2.cdf(12,10) # gives 0.285057
+# To find x such that Pr(X <= x) = 0.05,
+st.chi2.ppf(0.05,10) # gives 3.9403
+# To find x such that Pr(X >= x) = 0.05,
+st.chi2.ppf(0.95,10) # gives 18.307
+```
+
+### f-Distribution
+
+Below are the functions for computations with the **f-Distribution**.
+
+```python
+# X ~ F(12,10), where degrees of freedom are 12 and 10
+
+# To find Pr(X <= 3),
+st.f.cdf(3,12,10) # gives 0.954299
+# To find pdf f(3),
+st.f.pdf(3,12,10) # gives 0.046852
+# To find Pr(X > 3),
+1-st.f.cdf(3,12,10) # gives 0.0457007
+# To find x such that Pr(X <= x) = 0.05,
+st.f.ppf(0.05,12,10) # gives 0.363189
+# To find x such that Pr(X >= x) = 0.05,
+st.f.ppf(0.95,12,10) # gives 2.91298
+```
 
 ### Displaying answers
 
@@ -138,28 +295,6 @@ float
 """
 pdf = [(1, 0.1), (2, 0.2), (3, 0.2), (4, 0.3), (5, 0.2)]
 var = find_var(pdf)
-```
-
-### Z-distribution
-
-Sometimes you get annoyed at having to specify 0 for mean, and 1 for variance.
-The `z_cdf` function is to provide the cumulative distribution function value for the standard normal distribution, given a point on the distribution.
-
-```python
-"""Finds the cumulative distribution function value at x, of the
-standard normal distribution, or z-distribution.
-
-Parameters
-----------
-x : float
-    The value of the z-distribution to compute.
-
-Returns
--------
-float
-    The cdf of the z-distribution at the given value.
-"""
-prob = z_cdf(0.05)
 ```
 
 ### Paired Data
@@ -293,6 +428,44 @@ float
     The value of the lower bound of the interval.
 """
 lower = lower_bound(0.95)
+```
+
+### Minimum Size for a Desired Error
+
+Sometimes we might have a particular amount of error that we find acceptable (or unacceptable), and we desire to achieve this level of error as we build our confidence intervals.
+
+This error can be achieved by increasing the sample size, _n_, as the sample mean variance decreases until it converges to the population mean at infinity. We can scale this and find the minimum sample size, \_n, for which a desired level of error is achieved.
+
+Below is the function, `error_min_size`, which provides this calculation and informs us of the range of values that _n_ can take, at its minimum.
+
+```python
+"""Finds the minimum size required to ensure a low level of error involved
+with construction of confidence intervals.
+This can only be used for confidence intervals on population mean, and
+only if it approximates to a normal distribution.
+
+Parameters
+----------
+conf_level : float
+    The value of the confidence level.
+
+std : float
+    The standard deviation of the population, or the sample.
+
+err : float
+    The error that is desired, at most.
+
+Returns
+-------
+string
+    The resultant inequality, which displays n, the sample size, and the
+    minimum size required.
+"""
+conf_level = 0.95
+std = 1.5
+err = 0.1
+min_size = error_min_size(conf_level, std, err)
+# returns "n >= 864.3282346561782"
 ```
 
 ## CI for Mean
