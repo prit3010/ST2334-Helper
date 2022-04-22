@@ -28,7 +28,6 @@ The detailed specifications and instructions are provided below.
 
     - [Displaying answers](#displaying-answers)
     - [Discrete pdf](#discrete-pdf)
-    - [Z-distribution](#z-distribution)
     - [Paired Data](#paired-data)
     - [Pooled Sample Variance](#pooled-sample-variance)
     - [Sum of Squares](#sum-of-squares)
@@ -139,28 +138,6 @@ float
 """
 pdf = [(1, 0.1), (2, 0.2), (3, 0.2), (4, 0.3), (5, 0.2)]
 var = find_var(pdf)
-```
-
-### Z-distribution
-
-Sometimes you get annoyed at having to specify 0 for mean, and 1 for variance.
-The `z_cdf` function is to provide the cumulative distribution function value for the standard normal distribution, given a point on the distribution.
-
-```python
-"""Finds the cumulative distribution function value at x, of the
-standard normal distribution, or z-distribution.
-
-Parameters
-----------
-x : float
-    The value of the z-distribution to compute.
-
-Returns
--------
-float
-    The cdf of the z-distribution at the given value.
-"""
-prob = z_cdf(0.05)
 ```
 
 ### Paired Data
