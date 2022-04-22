@@ -36,6 +36,7 @@ The detailed specifications and instructions are provided below.
 2. [Confidence Intervals](#confidence-intervals)
 
     - [Interval Bounds](#interval-bounds)
+    - [Minimum Size for a Desired Error](#minimum-size-for-a-desired-error)
     - [CI for Mean](#ci-for-mean)
         - [CI: Mean with Known Variance](#ci-mean-with-known-variance)
         - [CI: Mean with Unknown Variance](#ci-mean-with-unknown-variance)
@@ -293,6 +294,44 @@ float
     The value of the lower bound of the interval.
 """
 lower = lower_bound(0.95)
+```
+
+### Minimum Size for a Desired Error
+
+Sometimes we might have a particular amount of error that we find acceptable (or unacceptable), and we desire to achieve this level of error as we build our confidence intervals.
+
+This error can be achieved by increasing the sample size, _n_, as the sample mean variance decreases until it converges to the population mean at infinity. We can scale this and find the minimum sample size, _n, for which a desired level of error is achieved.
+
+Below is the function, `error_min_size`, which provides this calculation and informs us of the range of values that _n_ can take, at its minimum.
+
+```python
+"""Finds the minimum size required to ensure a low level of error involved
+with construction of confidence intervals.
+This can only be used for confidence intervals on population mean, and
+only if it approximates to a normal distribution.
+
+Parameters
+----------
+conf_level : float
+    The value of the confidence level.
+
+std : float
+    The standard deviation of the population, or the sample.
+
+err : float
+    The error that is desired, at most.
+
+Returns
+-------
+string
+    The resultant inequality, which displays n, the sample size, and the
+    minimum size required.
+"""
+conf_level = 0.95
+std = 1.5
+err = 0.1
+min_size = error_min_size(conf_level, std, err)
+# returns "n >= 864.3282346561782"
 ```
 
 ## CI for Mean
