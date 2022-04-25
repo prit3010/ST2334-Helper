@@ -434,7 +434,7 @@ lower = lower_bound(0.95)
 
 Sometimes we might have a particular amount of error that we find acceptable (or unacceptable), and we desire to achieve this level of error as we build our confidence intervals.
 
-This error can be achieved by increasing the sample size, _n_, as the sample mean variance decreases until it converges to the population mean at infinity. We can scale this and find the minimum sample size, \_n, for which a desired level of error is achieved.
+This error can be achieved by increasing the sample size, _n_, as the sample mean variance decreases until it converges to the population mean at infinity. We can scale this and find the minimum sample size, _n_ , for which a desired level of error is achieved.
 
 Below is the function, `error_min_size`, which provides this calculation and informs us of the range of values that _n_ can take, at its minimum.
 
