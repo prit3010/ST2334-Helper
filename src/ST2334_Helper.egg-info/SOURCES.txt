@@ -8,7 +8,9 @@ src/ST2334_Helper.egg-info/dependency_links.txt
 src/ST2334_Helper.egg-info/requires.txt
 src/ST2334_Helper.egg-info/top_level.txt
 src/st2334_helper/__init__.py
-src/st2334_helper/functions.py
+src/st2334_helper/confidence_intervals.py
+src/st2334_helper/general.py
+src/st2334_helper/hypotheses_tests.py
 src/st2334_helper.egg-info/PKG-INFO
 src/st2334_helper.egg-info/SOURCES.txt
 src/st2334_helper.egg-info/dependency_links.txt
