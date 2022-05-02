@@ -1,3 +1,21 @@
+Metadata-Version: 2.1
+Name: ST2334-Helper
+Version: 1.0.0
+Summary: A computational tool for NUS module ST2334
+Home-page: https://github.com/prit3010/ST2334-Helper
+Author: Prittam Ravi & Kevin Chang Jon Kit
+Author-email: kevinchangjk@gmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/prit3010/ST2334-Helper/issues
+Keywords: python3,statistics
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 # SciPy Helper
 
 _Written and developed by [Prittam Ravi](https://github.com/prit3010 "Prittam Ravi") and [Kevin Chang](https://github.com/kevinchangjk "Kevin Chang Jon Kit")_
@@ -51,3 +69,5 @@ For more details on how to use, please refer to the `guide` directory. The direc
 - `functions.md`: A document detailing the specifications and instructions for every function
 - `example.py`: An example of a script using the module, adapted from the creators' own attempt for ST2334 Quiz 4
 - `template.py`: A template python script, for quick and easy work
+
+
