@@ -1,0 +1,15 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/ST2334_Helper.egg-info/PKG-INFO
+src/ST2334_Helper.egg-info/SOURCES.txt
+src/ST2334_Helper.egg-info/dependency_links.txt
+src/ST2334_Helper.egg-info/requires.txt
+src/ST2334_Helper.egg-info/top_level.txt
+src/st2334_helper/__init__.py
+src/st2334_helper/functions.py
+src/st2334_helper.egg-info/PKG-INFO
+src/st2334_helper.egg-info/SOURCES.txt
+src/st2334_helper.egg-info/dependency_links.txt
+src/st2334_helper.egg-info/top_level.txt
