@@ -1022,7 +1022,7 @@ var1, var2 = 2.2, 2.4
 sample_var1, sample_var2 = 2.4, 2.8
 tails = 0
 pv = ht.pv_calc_f(n1, n2, var1, var2, sample_var1, sample_var2, tails)
-disp(pv)
+gn.disp(pv) # prints 0.5608233698758818
 ```
 
 ## Concluding the Test
@@ -1052,7 +1052,7 @@ string
 """
 pv = 0.02
 alpha = 0.05
-gn.disp(ht.comp_p_alpha(pv, alpha))
+gn.disp(ht.comp_p_alpha(pv, alpha)) # prints "0.02 < 0.05, H_0 is rejected"
 ```
 
 # Transformers
@@ -1254,7 +1254,7 @@ x_bar, mu, var, n = 4.5, 5, 1.5, 30
 alpha = 0.05
 tails = 0
 ans = ht.mean_known(x_bar, mu, var, n, alpha, tails)
-gn.disp(ans)
+gn.disp(ans) # prints "0.025347318677468252 < 0.05, H_0 is rejected"
 ```
 
 ## HT: Mean with Unknown Variance
@@ -1296,8 +1296,7 @@ x_bar, mu, sample_var, n = 4.5, 5, 1.5, 30
 alpha = 0.05
 tails = 0
 ans = ht.mean_unknown(x_bar, mu, sample_var, n, alpha, tails)
-gn.disp(ans)
-
+gn.disp(ans) # prints "0.025347318677468252 < 0.05, H_0 is rejected"
 ```
 
 ## HT: Difference in Mean with Known Variance
@@ -1344,6 +1343,8 @@ ans1 = ht.diff_known(x_bar, mu, var, n, alpha, tails)
 mu2 = [0, 0]
 ans2 = ht.diff_known(x_bar, mu2, var, n, alpha, tails)
 gn.disp(ans1, ans2)
+# prints "0.7641771556220935 > 0.05, H_0 is not rejected"
+#        "0.13361440253771617 > 0.05, H_0 is not rejected"
 ```
 
 ## HT: Difference in Mean with Unknown Variance
@@ -1390,6 +1391,8 @@ ans1 = ht.diff_unknown(x_bar, mu, sample_var, n, alpha, tails)
 mu2 = [0, 0]
 ans2 = ht.diff_unknown(x_bar, mu2, sample_var, n, alpha, tails)
 gn.disp(ans1, ans2)
+# prints "0.7657307167710179 > 0.05, H_0 is not rejected"
+#        "0.141466776879148 > 0.05, H_0 is not rejected"
 ```
 
 ## HT: Difference in Mean with Unknown but Equal Variance
@@ -1436,6 +1439,8 @@ ans1 = ht.diff_equal(x_bar, mu, sample_var, n, alpha, tails)
 mu2 = [0, 0]
 ans2 = ht.diff_equal(x_bar, mu2, sample_var, n, alpha, tails)
 gn.disp(ans1, ans2)
+# prints "0.7671725644521863 > 0.05, H_0 is not rejected"
+#        "0.14394169373323762 > 0.05, H_0 is not rejected"
 ```
 
 ## HT: Difference in Mean of Paired Data
@@ -1473,13 +1478,11 @@ Returns
 string
     The conclusion of the test.
 """
-mean = 0.2833333333333334
-sample_var = 0.005666666666666632
-d_bar, mu_d, var, n = 20.283333333333333, 0, 0.005666666666666632, 6
+d_bar, mu_d, var, n = 0.283333333333333, 0, 0.005666666666666632, 6
 alpha = 0.05
 tails = 0
 ans = ht.paired(d_bar, mu_d, var, n, alpha, tails)
-gn.disp(ans)
+gn.disp(ans) # prints "0.0002520662588245681 < 0.05, H_0 is rejected"
 ```
 
 Below is the function `paired_raw`, for when only the raw set of paired data is available, and the mean and variance are not yet available.
@@ -1519,7 +1522,7 @@ mu_d = 0
 alpha = 0.05
 tails = 0
 ans = ht.paired_raw(x, y, mu_d, alpha, tails)
-gn.disp(ans)
+gn.disp(ans) # prints "0.0002520662588245681 < 0.05, H_0 is rejected"
 ```
 
 # Hypotheses Test for Variance
@@ -1561,7 +1564,7 @@ sample_var, var, n = 3.2, 3, 40
 alpha = 0.05
 tails = 0
 ans = ht.var_hypotest(sample_var, var, n, alpha, tails)
-gn.disp(ans)
+gn.disp(ans) # prints "0.7164102211452501 > 0.05, H_0 is not rejected"
 ```
 
 ## HT: Ratio of Variance
@@ -1605,4 +1608,6 @@ ans1 = ht.var_ratio(sample_var, var, n, alpha, tails)
 var2 = [1, 1] #if variance is not known
 ans2 = ht.var_ratio(sample_var, var2, n, alpha, tails)
 gn.disp(ans1, ans2)
+# prints "0.5826098485356109 > 0.05, H_0 is not rejected"
+#        "0.7938258588279136 > 0.05, H_0 is not rejected"
 ```
