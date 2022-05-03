@@ -1,4 +1,4 @@
-# SciPy Helper
+# ST2334 Helper
 
 _Written and developed by [Prittam Ravi](https://github.com/prit3010 "Prittam Ravi") and [Kevin Chang](https://github.com/kevinchangjk "Kevin Chang Jon Kit")_
 
@@ -36,7 +36,6 @@ There are three main functionalities provided, grouped into three submodules as 
 2. Confidence Intervals: construct confidence intervals for samples
 3. Hypotheses Testing: conduct hypothesis test given data
 
-
 To begin using the functions, import the module in a python shell. It is recommended to perform the imports as such, for greater efficiency during calculations.
 
 ```python
@@ -48,6 +47,7 @@ from st2334_helper import hypotheses_tests as ht
 After which, you can use the functions as you please, by invoking them in the shell.
 
 For more details on how to use, please refer to the `guide` directory. The directory contains three files:
+
 - `functions.md`: A document detailing the specifications and instructions for every function
 - `example.py`: An example of a script using the module, adapted from the creators' own attempt for ST2334 Quiz 4
 - `template.py`: A template python script, for quick and easy work
